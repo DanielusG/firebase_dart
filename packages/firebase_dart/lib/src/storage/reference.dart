@@ -19,7 +19,8 @@ class ReferenceImpl implements Reference {
   final ResourceClient requests;
 
   ReferenceImpl(this.storage, this.location)
-      : requests = ResourceClient(location, storage.httpClient);
+      : requests = ResourceClient(location, storage.httpClient,
+            storage.app.options.defaultHostStorage);
 
   /// The URL for the bucket and path this object references, in the form
   /// gs://<bucket>/<object-path>

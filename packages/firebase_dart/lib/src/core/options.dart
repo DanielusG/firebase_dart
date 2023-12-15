@@ -85,6 +85,13 @@ class FirebaseOptions {
   /// This property is used on iOS only.
   final String? appGroupId;
 
+  /// Usefull for testing, allows to override the default host for storage.
+  /// 
+  /// This can be used to test against a local firebase emulator.
+  /// 
+  /// E.g. `localhost:9199`
+  final String defaultHostStorage;
+
   /// The options used to configure a Firebase app.
   ///
   /// ```dart
@@ -113,6 +120,7 @@ class FirebaseOptions {
     this.iosClientId,
     this.iosBundleId,
     this.appGroupId,
+    this.defaultHostStorage = 'firebasestorage.googleapis.com'
   });
 
   /// Named constructor to create [FirebaseOptions] from a Map.

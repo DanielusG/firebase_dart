@@ -10,13 +10,13 @@ import '../metadata.dart';
 
 class ResourceClient {
   /// Domain name for firebase storage.
-  static const defaultHost = 'firebasestorage.googleapis.com';
+  final String defaultHost;
 
   final http.Client httpClient;
 
   final Location location;
 
-  ResourceClient(this.location, this.httpClient);
+  ResourceClient(this.location, this.httpClient, this.defaultHost);
 
   Uri _makeUrl(String urlPart) {
     return Uri.parse('https://$defaultHost/v0$urlPart');

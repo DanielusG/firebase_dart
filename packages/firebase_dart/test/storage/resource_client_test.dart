@@ -20,6 +20,7 @@ void main() async {
     var locationEscapes = Location.fromBucketSpec('b/').child('o?');
     var locationEscapesUrl = '/b/b%2F/o/o%3F';
     var locationEscapesNoObjUrl = '/b/b%2F/o';
+    const defaultHost = 'firebasestorage.googleapis.com';
 
     String? token;
     late FutureOr<Response> Function(Request) handler;
@@ -37,7 +38,7 @@ void main() async {
         for (var location in locations.keys) {
           var url = locations[location];
 
-          var client = ResourceClient(location, httpClient);
+          var client = ResourceClient(location, httpClient, defaultHost);
 
           var now = DateTime.now();
           handler = (request) {
@@ -85,7 +86,7 @@ void main() async {
 
     group('ResourceClient.list', () {
       test('ResourceClient.list: root: success', () async {
-        var client = ResourceClient(locationRoot, httpClient);
+        var client = ResourceClient(locationRoot, httpClient, defaultHost);
 
         handler = (request) {
           expect(request.url.path, '/v0$locationNormalNoObjUrl');
@@ -111,7 +112,7 @@ void main() async {
         });
       });
       test('ResourceClient.list: success', () async {
-        var client = ResourceClient(locationNormal, httpClient);
+        var client = ResourceClient(locationNormal, httpClient, defaultHost);
 
         handler = (request) {
           expect(request.url.path, '/v0$locationNormalNoObjUrl');
@@ -151,7 +152,7 @@ void main() async {
 
     group('ResourceClient.getDownloadUrl', () {
       test('ResourceClient.getDownloadUrl: success', () async {
-        var client = ResourceClient(locationNormal, httpClient);
+        var client = ResourceClient(locationNormal, httpClient, defaultHost);
 
         var now = DateTime.now();
         handler = (request) {
@@ -180,7 +181,7 @@ void main() async {
         var response = await client.getDownloadUrl();
 
         expect(response,
-            'https://${ResourceClient.defaultHost}/v0/b/$normalBucket/o/${Uri.encodeComponent('foo/bar/baz.png')}?alt=media&token=a');
+            'https://$defaultHost/v0/b/$normalBucket/o/${Uri.encodeComponent('foo/bar/baz.png')}?alt=media&token=a');
       });
     });
 
@@ -194,7 +195,7 @@ void main() async {
         for (var location in locations.keys) {
           var url = locations[location];
 
-          var client = ResourceClient(location, httpClient);
+          var client = ResourceClient(location, httpClient, defaultHost);
 
           var now = DateTime.now();
           handler = (request) {
@@ -261,7 +262,7 @@ void main() async {
         for (var location in locations.keys) {
           var url = locations[location];
 
-          var client = ResourceClient(location, httpClient);
+          var client = ResourceClient(location, httpClient, defaultHost);
 
           handler = (request) {
             expect(request.url.path, '/v0$url');
@@ -284,7 +285,7 @@ void main() async {
         for (var location in locations.keys) {
           var url = locations[location];
 
-          var client = ResourceClient(location, httpClient);
+          var client = ResourceClient(location, httpClient, defaultHost);
 
           var data = Uint8List.fromList(utf8.encode('hello world!'));
 
@@ -337,7 +338,7 @@ void main() async {
         for (var location in locations.keys) {
           var url = locations[location];
 
-          var client = ResourceClient(location, httpClient);
+          var client = ResourceClient(location, httpClient, defaultHost);
 
           var data = Uint8List.fromList(utf8.encode('hello world!'));
           const uploadUrl = 'https://i.am.an.upload.url.com/hello/there';
@@ -374,7 +375,7 @@ void main() async {
         const url =
             'https://this.is.totally.a.real.url.com/hello/upload?whatsgoingon';
         var location = locationNormal;
-        var client = ResourceClient(location, httpClient);
+        var client = ResourceClient(location, httpClient, defaultHost);
         var data = Uint8List.fromList(utf8.encode('hello world!'));
         handler = (request) {
           expect(request.url, Uri.parse(url));
@@ -403,7 +404,7 @@ void main() async {
         const url =
             'https://this.is.totally.a.real.url.com/hello/upload?whatsgoingon';
         var location = locationNormal;
-        var client = ResourceClient(location, httpClient);
+        var client = ResourceClient(location, httpClient, defaultHost);
         var data = Uint8List.fromList(utf8.encode('hello world!'));
         handler = (request) {
           expect(request.url, Uri.parse(url));
@@ -434,7 +435,7 @@ void main() async {
         const url =
             'https://this.is.totally.a.real.url.com/hello/upload?whatsgoingon';
         var location = locationNormal;
-        var client = ResourceClient(location, httpClient);
+        var client = ResourceClient(location, httpClient, defaultHost);
         var data = Uint8List.fromList(utf8.encode('hello world!'));
         handler = (request) {
           expect(request.url, Uri.parse(url));
@@ -469,7 +470,7 @@ void main() async {
     group('Error handling', () {
       test('error handler passes through unknown errors', () async {
         var location = locationNormal;
-        var client = ResourceClient(location, httpClient);
+        var client = ResourceClient(location, httpClient, defaultHost);
         handler = (request) {
           return Response('', 509, request: request);
         };
@@ -477,7 +478,7 @@ void main() async {
       });
       test('error handler converts 404 to not found', () async {
         var location = locationNormal;
-        var client = ResourceClient(location, httpClient);
+        var client = ResourceClient(location, httpClient, defaultHost);
         handler = (request) {
           return Response('', 404, request: request);
         };
@@ -486,7 +487,7 @@ void main() async {
       });
       test('error handler converts 402 to quota exceeded', () async {
         var location = locationNormal;
-        var client = ResourceClient(location, httpClient);
+        var client = ResourceClient(location, httpClient, defaultHost);
         handler = (request) {
           return Response('', 402, request: request);
         };
